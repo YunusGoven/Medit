@@ -1,0 +1,37 @@
+﻿@model Medit1.Models.ViewModels.AdministrationReservationViewModel
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+@{
+    ViewData["Title"] = "Toutes les réservation";
+}
+
+<h1>Mes réservations</h1>
+<div class="container-fluid row">
+    <div class="col-sm-3">
+        <a asp-action="Details" asp-controller="Cruises" asp-route-id="@Model.Cruise.CruiseId" class="btn btn-primary">Voir la croissières</a>
+        <p>Place Réserver : @Model.ParticipantReservations.Count</p>
+    </div>
+
+    <table class="table col-sm-7">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Prénom</th>
+                <th>Date de naissance</th>
+                <th>Membre</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.ParticipantReservations)
+            {
+                <tr>
+                    <td>@item.Participant.Name</td>
+                    <td>@item.Participant.FirstName</td>
+                    <td>@item.Participant.BirthDate.ToShortDateString()</td>
+                    <td>@( UserManager.FindByIdAsync(Model.ParticipantReservations.ToArray()[0].Reservation.UserId).Result.Name)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

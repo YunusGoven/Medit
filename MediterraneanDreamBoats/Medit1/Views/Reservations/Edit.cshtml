@@ -1,0 +1,81 @@
+﻿@model Medit1.Models.Reservation
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Csrf
+
+@functions
+{
+    public string GetToken()
+    {
+        return Csrf.GetAndStoreTokens(Context).RequestToken;
+    }
+}
+
+
+@{
+    ViewData["Title"] = "Modifier reservation";
+}
+
+<h1>Modifier réservation</h1>
+
+<hr />
+<div class="container m-5">
+    <div>
+        <div>
+            <form asp-action="Edit">
+                <input type="hidden" id="GetToken" name="GetToken" value="@GetToken()" />
+                <input type="hidden" asp-for="@Model.ReservationId" id="reservationId" hidden="hidden"/>
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="ReservationId"/>
+
+                <table class="container-fluid">
+                    <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>Prénom</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @for (int i = 0; i < Model.Participants.Count; i++)
+                    {
+                        <tr>
+                            <td>
+                                @Model.Participants[i].Participant.Name
+                            </td>
+                            <td>
+                                @Model.Participants[i].Participant.FirstName
+                            </td>
+                            <td>
+                                <input type="hidden" asp-for="Participants[i].ParticipantId" hidden="hidden"/>
+                                <input type="button" id="@Model.Participants[i].ParticipantId" class="btn btn-danger" value="Enlever" onclick="RemoveTextBox(this)"/>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+
+                
+            </form>
+            
+        </div>
+    </div>
+</div>
+<div class="form-group">
+    <a class="btn btn-secondary" asp-action="Edit" asp-route-id="@Model.ReservationId">Réinitialiser</a>
+    <button onclick="valider()" class="btn btn-primary">Confirmer annulation</button>
+</div>
+
+<a class="btn btn-secondary" asp-action="Details" asp-route-id="@Model.ReservationId">Revenir à la page précedente</a>
+
+@section Scripts {
+    <environment include="Development">
+        <script src="~/js/editReservation.js" asp-append-version="true"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="~/mylib/editReservation.min.js" asp-append-version="true"></script>
+    </environment>
+    
+    <script type="text/javascript">
+        var removed = [];
+    </script>
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

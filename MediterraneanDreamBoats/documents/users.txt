@@ -1,0 +1,19 @@
+Directeur :
+email: director@test.com
+mdp: Jecoule0!0
+
+Client 1:
+email: user1@test.com
+mdp: Test123/
+
+Client 2:
+email: user2@test.com
+mdp: Test123/
+
+Client 3:
+email: user3@test.com
+mdp: Test123/
+
+Client 4:
+email: user4@test.com
+mdp: Test123/

@@ -1,0 +1,140 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+@model Medit1.Models.ViewModels.DetailCruiseViewModel
+
+@{
+    ViewData["Title"] = "Detail de la croisire";
+}
+
+<h1>Détail</h1>
+
+<div>
+    <h4>@Model.Cruise.Name</h4>
+    <hr />
+    <div class="row">
+        <div id="carouselExampleControls" class="carousel col-md-5" data-ride="carousel">
+            <div class="carousel-inner">
+                @for (int i = 0; i < Model.Cruise.Images.Count; i++)
+                {
+                    if (i == 0)
+                    {
+                        <div class="carousel-item active">
+                            <img src="~/img/cruises/@Model.Cruise.Images.ElementAt(i).Path" class="d-block w-100" alt="une image d'une croisiere">
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="carousel-item">
+                            <img src="~/img/cruises/@Model.Cruise.Images.ElementAt(i).Path" class="d-block w-100" alt="une image d'une croisiere">
+                        </div>
+                    }
+                }
+
+                <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                </a>
+                <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                </a>
+            </div>
+        </div>
+        <dl class="col-md-5">
+            <dt>
+                @Html.DisplayNameFor(model => model.PlaceDisponible)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.PlaceDisponible) /
+                @Html.DisplayFor(model => model.PlaceTotal)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Cruise.DateDepart)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Cruise.DateDepart) :
+                @Html.DisplayFor(model => model.Cruise.PortDepart.Name)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Cruise.DateArrivee)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Cruise.DateArrivee) :
+                @Html.DisplayFor(model => model.Cruise.ArrivalPort.Name)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Cruise.Boat)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Cruise.Boat.Type) :
+                @Html.DisplayFor(model => model.Cruise.Boat.Name)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Cruise.TypeCruise)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Cruise.TypeCruise.Name) :
+                @Html.DisplayFor(model => model.Cruise.TypeCruise.Description)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Cruise.TransitPorts)
+            </dt>
+            <dd>
+                @{
+                    var transit = "";
+                    foreach (var cruisePort in Model.Cruise.TransitPorts)
+                    {
+                        transit += cruisePort.Port.Name + " ";
+                    }
+                    <div>@transit</div>
+                }
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Cruise.DistanceTotal)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Cruise.DistanceTotal)
+            </dd>
+            <dt >
+                @Html.DisplayNameFor(model => model.Cruise.Commodites)
+            </dt>
+            <dd >
+                @{
+                    var commodite = "";
+                    foreach (var cruiseCommodite in Model.Cruise.Commodites)
+                    {
+                        commodite += cruiseCommodite.Commodite.Name + "   ";
+                    }
+                    <div>@commodite</div>
+                }
+            </dd>
+
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Cruise.Description)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Cruise.Description)
+            </dd>
+        </dl>
+        <div class="col-md-2">
+            @{
+                if (Model.Cruise.AdultOnly)
+                {
+                    <div class="alert alert-danger" role="alert">
+                        Réservé aux adultes !
+                    </div>
+                }
+                if (SignInManager.IsSignedIn(User) && Model.PlaceDisponible!=0)
+                {
+                    <a class="btn btn-primary" type="button" asp-controller="Reservations" asp-action="Create" asp-route-id="@Model.Cruise.CruiseId">Réserver</a>
+                }
+                @if (User.IsInRole("Director"))
+                {
+                    <a class="btn btn-secondary" type="button" asp-action="Delete" asp-route-id="@Model.Cruise.CruiseId">Supprimer</a>
+                }
+
+            }
+        </div>
+    </div>
+
+</div>

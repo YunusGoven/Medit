@@ -1,0 +1,35 @@
+﻿@model IEnumerable<Medit1.Models.Reservation>
+
+@{
+    ViewData["Title"] = "Mes réservations";
+    ISet<int> cruise = new HashSet<int>();
+}
+
+<h1>Mes réservations</h1>
+<div class="container">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Croisière</th>
+                <th>Date</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+    @foreach (var item in Model)
+    {
+        if (User.IsInRole("Director") || !cruise.Contains(item.Cruise.CruiseId))
+        {
+            <tr>
+                <td><a asp-action="Details" asp-controller="Cruises" asp-route-id="@item.Cruise.CruiseId" class="link-info" >@item.Cruise.Name</a></td>
+                <td>@item.Cruise.DateDepart.ToShortDateString() - @item.Cruise.DateArrivee.ToShortDateString()</td>
+                <td>
+                    <a class="btn btn-info" asp-action="Details" asp-route-id="@item.ReservationId">Détail</a> 
+                </td>
+            </tr>
+        }
+        cruise.Add(item.Cruise.CruiseId);
+    }
+        </tbody>
+    </table>
+</div>

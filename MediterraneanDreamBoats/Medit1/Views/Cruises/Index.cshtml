@@ -1,0 +1,106 @@
+﻿@model Medit1.Models.ViewModels.IndexCruiseViewModel
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Csrf
+
+@functions
+{
+    public string GetToken()
+    {
+        return Csrf.GetAndStoreTokens(Context).RequestToken;
+    }
+}
+
+<input type="hidden" id="GetToken" name="GetToken" value="@GetToken()" />
+@{
+    ViewData["Title"] = "Croisières";
+}
+
+<h1 class="h1">Toutes les croisières</h1>
+<div class="container">
+    @{
+        if (SignInManager.IsSignedIn(User) && User.IsInRole("Director"))
+        {
+            <a asp-action="Create" class="btn btn-info">Ajouter une croisière</a>
+        }
+    }
+    <div class="row">
+        <div class="dropdown col-sm-4">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="filterButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="False">
+                Filter
+            </button>
+            <div class="dropdown-menu" aria-labelledby="filterButton">
+                <a asp-action="Index" asp-route-filterId="-1" class="dropdown-item">Toutes les croisières</a>
+                @foreach (var type in Model.TypeCruises)
+                {
+                    <a asp-action="Index" asp-route-filterId="@type.TypeCruiseId" class="dropdown-item">@type.Name</a>
+                }
+                <a asp-action="Index" asp-route-filterId="-2" class="dropdown-item">Réservé aux adultes</a>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <form class="form-group " asp-action="Index" method="get">
+                <input name="filterId" value="@ViewBag.FilterId" hidden="hidden" />
+                <label class="col col-form-label" for="portname">Rechercher selon le port: </label>
+                <input class="form-control" type="text" name="portname" id="portname" value="@ViewBag.Portname" />
+                <input type="submit" value="Rechercher" class="btn btn-secondary" />
+            </form>
+        </div>
+    </div>
+
+    @foreach (var item in Model.Cruises)
+    {
+
+        <div class="row">
+            <div class="col-md-4">
+                @{
+                    if (item.Images.Count != 0)
+                    {
+                        <a asp-action="Details" asp-route-id="@item.CruiseId"><img src="~/img/cruises/@item.Images.ElementAt(0).Path" width="300" height="150" class="img-fluid rounded mb-3 mb-md-0" alt="une image d'une croisiere"></a>
+                    }
+                }
+            </div>
+            <div class="col-md-6">
+                <div>Name : @item.Name</div>
+                <div>Departure : @item.DateDepart.ToLongDateString() : @item.PortDepart.Name</div>
+                <div>Arrival : @item.DateArrivee.ToLongDateString() : @item.ArrivalPort.Name</div>
+                @{
+                    var transit = new List<string>();
+                    foreach (var tran in item.TransitPorts)
+                    {
+                        transit.Add(tran.Port.Name);
+                    }
+                    var join = String.Join(", ", transit);
+                    if (transit.Count != 0)
+                    {
+                        <div>Port(s) de transit(s) : @join</div>
+                    }
+                }
+            </div>
+            <div class="col-md-2">
+                @{
+                    if (item.AdultOnly)
+                    {
+                        <div class="alert alert-danger" role="alert">Réservé aux adultes !</div>
+                    }
+                }
+                <a class="btn btn-info" asp-action="Details" asp-route-id="@item.CruiseId">Voir les détails</a>
+            </div>
+        </div>
+        <hr />
+    }
+</div>
+
+@section Scripts
+{
+    <environment include="Development">
+        <script src="~/js/cruisesFilter.js" asp-append-version="true"></script>
+        <script src="~/jqueryui/jquery-ui.js" asp-append-version="true"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="~/jqueryui/jquery-ui.min.js" asp-append-version="true"></script>
+        <script src="~/mylib/cruisesFilter.min.js" asp-append-version="true"></script>
+    </environment>
+
+}

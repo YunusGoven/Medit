@@ -1,0 +1,80 @@
+﻿@model Medit1.Models.Reservation
+
+@{
+    ViewData["Title"] = "Reservation";
+}
+
+<h1>Reservation</h1>
+
+<div class="container">
+    <div class="row">
+        <dl class="col-md-3">
+            <dt>
+                @Html.DisplayNameFor(model => model.Cruise.Name)
+            </dt>
+            <dd>
+                <a class="btn btn-light" asp-action="Details" asp-controller="Cruises" asp-route-id="@Model.Cruise.CruiseId">@Model.Cruise.Name</a>
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Cruise.DateDepart)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Cruise.DateDepart) :
+                @Html.DisplayFor(model => model.Cruise.PortDepart.Name)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Cruise.DateArrivee)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Cruise.DateArrivee) :
+                @Html.DisplayFor(model => model.Cruise.ArrivalPort.Name)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Cruise.TypeCruise)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Cruise.TypeCruise.Name) :
+                @Html.DisplayFor(model => model.Cruise.TypeCruise.Description)
+            </dd>
+            <dd>
+                @{
+                    var today = DateTime.Today;
+
+                    var ts = Model.Cruise.DateDepart - today;
+                    if (ts.Days > 7)
+                    {
+                        <a class="btn btn-danger" asp-action="Edit" asp-route-id="@Model.ReservationId">Annuler la réservation</a>
+
+                    }
+                    else
+                    {
+                        <div class="alert-danger">
+                            Vous ne pouvez plus annuler cette croisière!
+                        </div>
+                    }
+                }
+            </dd>
+        </dl>
+        <div class="container col-md-7">
+            <table class="container-fluid">
+                <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Prénom</th>
+                    <th>Date de naissance</th>
+                </tr>
+                </thead>
+                <tbody>
+                @for (int i = 0; i < Model.Participants.Count; i++)
+                {
+                    <tr>
+                        <td>@Model.Participants[i].Participant.Name</td>
+                        <td>@Model.Participants[i].Participant.FirstName</td>
+                        <td>@Model.Participants[i].Participant.BirthDate.ToShortDateString()</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,110 @@
+﻿@model Medit1.Models.ViewModels.CreateCruiseViewModel
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Csrf
+
+@functions
+{
+    public string GetToken()
+    {
+        return Csrf.GetAndStoreTokens(Context).RequestToken;
+    }
+}
+
+
+@{
+    ViewData["Title"] = "Ajouter une croisière";
+}
+
+<input type="hidden" id="GetToken" name="GetToken" value="@GetToken()" />
+
+<h1>Ajouter une croisière</h1>
+
+<hr />
+<div class="container-fluid">
+    <div>
+        <form asp-action="Create" enctype="multipart/form-data">
+            
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Cruise.Name" class="form-label"></label>
+                <input asp-for="Cruise.Name" class="form-control" />
+                <span asp-validation-for="Cruise.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Cruise.Description" class="form-label"></label>
+                <textarea asp-for="Cruise.Description" class="form-control"></textarea>
+                <span asp-validation-for="Cruise.Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Cruise.TypeCruise" class="form-label"></label>
+                <select asp-for="TypeCruiseId" class="form-control" asp-items="@(new SelectList(Model.TypeCruises, "TypeCruiseId", "Name"))"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Cruise.Boat" class="form-label"></label>
+                <select asp-for="BoatId" class="form-control" asp-items="@(new SelectList(Model.Boats, "BoatId", "Name"))"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Cruise.DateDepart" class="form-label"></label>
+                <input asp-for="Cruise.DateDepart" class="form-control" />
+                <span asp-validation-for="Cruise.DateDepart" class="text-danger"></span>
+                <select asp-for="DeparturePortId" class="form-control" onchange="askDistance()" asp-items="@(new SelectList(Model.Ports, "PortId", "Name"))"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Cruise.DateArrivee" class="form-label"></label>
+                <input asp-for="Cruise.DateArrivee" class="form-control" />
+                <span asp-validation-for="Cruise.DateArrivee" class="text-danger"></span>
+                <select asp-for="ArrivalPortId" class="form-control" onchange="askDistance()" asp-items="@(new SelectList(Model.Ports, "PortId", "Name"))"></select>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Cruise.TransitPorts" class="form-label"></label>
+                <select id="transitsPortsSelect" class="form-control" asp-items="@(new SelectList(Model.Ports, "PortId", "Name"))"></select>
+                <button type="button" class="btn btn-secondary" onclick="addTransits()">Ajouter transit</button>
+                <div id="transitsPorts" class="container"></div>
+            </div>
+            <div class="form-group">
+                <label asp-for="Cruise.DistanceTotal" class="form-label"></label>
+                <input asp-for="Cruise.DistanceTotal" id="Cruise_DistanceTotal" disabled="disabled" class="form-control" />
+                <span asp-validation-for="Cruise.DistanceTotal" class="text-danger"></span>
+            </div>
+            <div class="form-group">  
+                <label asp-for="Cruise.Images" class="form-label"></label>
+                <input type="file" class="form-control" id="formFile" asp-for="File" multiple accept="image/*" />
+            </div>
+            <fieldset class="form-group">
+                <legend class="mt-4">Commodités</legend>
+                @{
+                    foreach (var commodite in Model.Commodites)
+                    {
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="@(commodite.CommoditeId)" name="CommoditesIds" value="@(commodite.CommoditeId)" />
+                            <label class="form-check-label" for="@(commodite.CommoditeId)">@commodite.Name</label>
+                        </div>
+                    }
+                }
+            </fieldset>
+            <div class="form-group">
+                <input type="submit" id="submit" value="Ajouter" class="btn btn-primary" />
+                <input type="reset" value="Réinitialiser" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a class="btn btn-primary btn-sm" asp-controller="Administration" asp-action="Index">Panel Administration</a>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+        var i = 0;
+        var transit = [];
+    </script>
+
+    <environment include="Development">
+        <script src="~/js/createCruise.js" ></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="~/mylib/createCruise.min.js"></script>
+    </environment>
+
+}

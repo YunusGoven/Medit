@@ -1,0 +1,117 @@
+﻿@model Medit1.Models.ViewModels.AdministrationViewModel
+
+@{
+    ViewBag.Title = "Panel d'administration";
+    Layout = "_Layout";
+}
+
+<h1>Panel D'Administration</h1>
+
+<div class="container border border-secondary" id="port">
+    <div class="d-flex">
+        <h2 class="p-2">Port</h2>
+        <a class="btn btn-primary ml-auto p-2"  asp-controller="Ports" asp-action="Create">Ajouter un port</a>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-fixed">
+            <thead>
+                <tr>
+                    <th scope="col" class="col-3">Nom</th>
+                    <th scope="col" class="col-3">Lattitude</th>
+                    <th scope="col" class="col-3">Longitude</th>
+                    <th scope="col" class="col-3">Options</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    foreach (var port in Model.Ports)
+                    {
+                        <tr class="d-flex justify-content-center">
+                            <td class="col-3">@port.Name</td>
+                            <td class="col-3">@port.Latitude</td>
+                            <td class="col-3">@port.Longitude</td>
+                            <td class="col-3">
+                                <a class="btn btn-primary btn-sm" asp-route-id="@port.PortId" asp-controller="Ports" asp-action="Edit">Modifier</a>
+                                <a class="btn btn-primary btn-sm" asp-route-id="@port.PortId" asp-controller="Ports" asp-action="Delete">Supprimer</a>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+
+        </table>
+    </div>
+</div>
+<div class="container border border-secondary" id="boat">
+    <div class="d-flex">
+        <h2 class="p-2">Bateau</h2>
+        <a class="btn btn-primary ml-auto p-2"  asp-controller="Boats" asp-action="Create">Ajouter un bateau</a>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-fixed">
+            <thead>
+                <tr>
+                    <th scope="col" class="col-3">Nom</th>
+                    <th scope="col" class="col-3">Type</th>
+                    <th scope="col" class="col-1">Places</th>
+                    <th scope="col" class="col-4">Options</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    foreach (var boat in Model.Boats)
+                    {
+                        <tr class="d-flex ">
+                            <td class="col-3">@boat.Name</td>
+                            <td class="col-3">@boat.Type</td>
+                            <td class="col-1">@boat.NbConvives</td>
+                            <td class="col-4">
+                                <a class="btn btn-primary btn-sm" asp-route-id="@boat.BoatId" asp-controller="Boats" asp-action="Edit">Modifier</a>
+                                <a class="btn btn-primary btn-sm" asp-route-id="@boat.BoatId" asp-controller="Boats" asp-action="Delete">Supprimer</a>
+                                <a class="btn btn-primary btn-sm" asp-route-id="@boat.BoatId" asp-controller="Boats" asp-action="Details">Detail</a>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="container border border-secondary" id="cruises">
+    <div class="d-flex">
+        <h2 class="p-2">Croisière</h2>
+        <a class="btn btn-primary ml-auto p-2" asp-area="" asp-controller="Cruises" asp-action="Create">Ajouter une Croisière</a>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-fixed">
+            <thead>
+                <tr>
+                    <th scope="col" class="col-2">Nom</th>
+                    <th scope="col" class="col-3">Départ</th>
+                    <th scope="col" class="col-3">Arrivé</th>
+                    <th scope="col" class="col-2">Bateau</th>
+                    <th scope="col" class="col-2">Options</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    foreach (var cruise in Model.Cruises)
+                    {
+                        <tr class="d-flex justify-content-center">
+                            <td class="col-2">@cruise.Name</td>
+                            <td class="col-3">@cruise.DateDepart.ToShortDateString() (@cruise.PortDepart.Name)</td>
+                            <td class="col-3">@cruise.DateArrivee.ToShortDateString() (@cruise.ArrivalPort.Name)</td>
+                            <td class="col-2">@cruise.Boat.Name</td>
+                            <td class="col-2">
+                                <a class="btn btn-primary btn-sm" asp-route-id="@cruise.CruiseId" asp-controller="Reservations" asp-action="AllReservationForCruise">Reservations</a>
+                                <a class="btn btn-primary btn-sm" asp-route-id="@cruise.CruiseId" asp-controller="Cruises" asp-action="Delete">Supprimer</a>
+                                <a class="btn btn-primary btn-sm" asp-route-id="@cruise.CruiseId" asp-controller="Cruises" asp-action="Details">Détail</a>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+

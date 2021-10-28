@@ -1,0 +1,44 @@
+﻿@model Medit1.Models.Boat
+
+@{
+    ViewData["Title"] = "Detail bateau";
+}
+
+<h1>Détail</h1>
+
+<div>
+    <h4>Bateau</h4>
+    <hr />
+    <div class="container">
+        <dl class="row">
+            <dt class = "col-sm-2">
+                @Html.DisplayNameFor(model => model.Name)
+            </dt>
+            <dd class = "col-sm-10">
+                @Html.DisplayFor(model => model.Name)
+            </dd>
+            <dt class = "col-sm-2">
+                @Html.DisplayNameFor(model => model.Description)
+            </dt>
+            <dd class = "col-sm-10">
+                @Html.DisplayFor(model => model.Description)
+            </dd>
+            <dt class = "col-sm-2">
+                @Html.DisplayNameFor(model => model.Type)
+            </dt>
+            <dd class = "col-sm-10">
+                @Html.DisplayFor(model => model.Type)
+            </dd>
+            <dt class = "col-sm-2">
+                @Html.DisplayNameFor(model => model.NbConvives)
+            </dt>
+            <dd class = "col-sm-10">
+                @Html.DisplayFor(model => model.NbConvives)
+            </dd>
+        </dl>
+    </div>
+</div>
+<div>
+    <a asp-action="Edit" class="btn btn-primary" asp-route-id="@Model.BoatId">Modifier</a>
+    <a class="btn btn-danger" asp-action="Delete" asp-route-id="@Model.BoatId">Supprimer</a>
+</div>

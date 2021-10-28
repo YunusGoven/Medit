@@ -1,0 +1,125 @@
+﻿@model Medit1.Models.ViewModels.ReservationViewModel
+
+@{
+    ViewData["Title"] = "Reserver";
+}
+
+<h3>Reserver</h3>
+<hr />
+<div class="container">
+    <h4>@Model.Cruise.Name</h4>
+    <hr />
+    <div class="row">
+        <dl class="col-md-3">
+            <dt>
+                @Html.DisplayNameFor(model => model.Cruise.DateDepart)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Cruise.DateDepart) :
+                @Html.DisplayFor(model => model.Cruise.PortDepart.Name)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Cruise.DateArrivee)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Cruise.DateArrivee) :
+                @Html.DisplayFor(model => model.Cruise.ArrivalPort.Name)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Cruise.TypeCruise)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Cruise.TypeCruise.Name) :
+                @Html.DisplayFor(model => model.Cruise.TypeCruise.Description)
+            </dd>
+        </dl>
+        <div class="container col-md-7">
+            <form method="post" asp-action="Create">
+                <input type="submit" class="btn btn-primary" value="Réserver" />
+                <input type="button" class="btn btn-secondary" id="addParticipant" onclick="addChamp()" value="Ajouter Participant" />
+
+                @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+
+                <input type="hidden" asp-for="CruiseId" value="@Model.Cruise.CruiseId" />
+                <div class="container-fluid" id="participantContainer">
+                    @{
+                        if (Model.Participants == null)
+                        {
+                            <div class="container row">
+                                <div class="col-md-4">
+                                    <input asp-for="Participants[0].Name" placeholder="Nom" />
+                                </div>
+                                <div class="col-md-4">
+                                    <input asp-for="Participants[0].FirstName" placeholder="Prénom" />
+                                </div>
+                                <div class="col-md-4">
+                                    <input asp-for="Participants[0].BirthDate" placeholder="Date de naissance" />
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            for (int i = 0; i < Model.Participants.Count; i++)
+                            {
+                                <div class="container row">
+                                    <div class="col-md-4">
+                                        @if (Model.Participants[i].Name.Equals("-1"))
+                                        {
+                                            <input asp-for="Participants[i].Name" placeholder="Nom" hidden="hidden" />
+                                        }
+                                        else
+                                        {
+                                            <input asp-for="Participants[i].Name" placeholder="Nom" />
+                                        }
+                                    </div>
+                                    <div class="col-md-4">
+                                        @if (Model.Participants[i].Name.Equals("-1"))
+                                        {
+                                            <input asp-for="Participants[i].FirstName" placeholder="Nom" hidden="hidden" />
+                                        }
+                                        else
+                                        {
+                                            <input asp-for="Participants[i].FirstName" placeholder="Nom" />
+                                        }
+                                    </div>
+                                    <div class="col-md-4">
+                                        @if (Model.Participants[i].Name.Equals("-1"))
+                                        {
+                                            <input asp-for="Participants[i].BirthDate" placeholder="Nom" hidden="hidden" />
+                                        }
+                                        else
+                                        {
+                                            <input asp-for="Participants[i].BirthDate" placeholder="Nom" />
+                                        }
+                                    </div>
+                                    <div class="col-md-1">
+                                        <input type="button" class="btn btn-danger" value="Enlever" onclick="RemoveTextBox(this)" />
+                                    </div>
+                                </div>
+                            }
+                        }
+                    }
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+
+
+
+
+@section Scripts {
+    <environment include="Development">
+        <script src="~/js/createReservation.js" asp-append-version="true"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="~/mylib/createReservation.min.js" asp-append-version="true"></script>
+    </environment>
+    <script type="text/javascript">
+        var i = 1;
+        var max = @Model.PlaceRestante;
+    </script>
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

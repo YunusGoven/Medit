@@ -1,0 +1,31 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+
+<ul class="navbar-nav">
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <li class="nav-item dropdown m-2">
+            <a class="nav-link dropdown-toggle " href="#" role="button" id="navbarDropdown" data-toggle="dropdown">Bienvenue @UserManager.GetUserName(User)</a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index">Mon profil</a>
+
+                <a class="dropdown-item" asp-area="" asp-controller="Reservations" asp-action="Index" >Mes Reservations</a>
+                @if (User.IsInRole("Director"))
+                {
+                    <a class="dropdown-item" asp-area="" asp-controller="Administration" asp-action="Index">Administration</a>
+                }
+                <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Logout" >Deconnexion</a>
+            </div>
+        </li>
+    }
+    else
+    {
+        <li class="nav-item m-2">
+            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Connexion</a>
+        </li>
+        <li class="nav-item m-2">
+            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">S'inscrire</a>
+        </li>
+    }
+</ul>
